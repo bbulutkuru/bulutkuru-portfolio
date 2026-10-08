@@ -1,38 +1,57 @@
 import React from "react";
-import { Code2, Rocket, Users, Award } from "lucide-react";
+import {
+  Code2,
+  Rocket,
+  Users,
+  Award,
+  Server,
+  Gauge,
+  LayoutDashboard,
+  Monitor,
+  Cloud,
+} from "lucide-react";
 import { STATS, SERVICES } from "../../utils/constants";
 
-const About = () => {
-  const highlights = [
-    {
-      icon: Code2,
-      title: "Clean Code",
-      description:
-        "PSR-12 standartları ve best practices ile temiz, okunabilir kod yazıyorum.",
-    },
-    {
-      icon: Rocket,
-      title: "Fast Delivery",
-      description:
-        "Agile metodoloji ile hızlı ve kaliteli teslimat sağlıyorum.",
-    },
-    {
-      icon: Users,
-      title: "Team Player",
-      description:
-        "Ekip çalışmasına yatkın, mentorluk ve liderlik deneyimim var.",
-    },
-    {
-      icon: Award,
-      title: "12+ Years",
-      description:
-        "260+ projeyi başarıyla tamamladım ve müşteri memnuniyeti sağladım.",
-    },
-  ];
+const serviceIcons = {
+  server: Server,
+  gauge: Gauge,
+  layout: LayoutDashboard,
+  monitor: Monitor,
+  cloud: Cloud,
+  users: Users,
+};
 
+const highlights = [
+  {
+    icon: Code2,
+    title: "Clean Code",
+    description:
+      "PSR-12 standartları ve best practices ile temiz, okunabilir kod yazıyorum.",
+  },
+  {
+    icon: Rocket,
+    title: "Fast Delivery",
+    description: "Agile metodoloji ile hızlı ve kaliteli teslimat sağlıyorum.",
+  },
+  {
+    icon: Users,
+    title: "Team Player",
+    description:
+      "Ekip çalışmasına yatkın, mentorluk ve liderlik deneyimim var.",
+  },
+  {
+    icon: Award,
+    title: "15+ Years",
+    description:
+      "400+ projeyi başarıyla tamamladım ve müşteri memnuniyeti sağladım.",
+  },
+];
+
+const About = () => {
   return (
     <section
       id="about"
+      aria-label="Hakkımda"
       className="relative min-h-screen py-20 px-4 bg-gray-900/30"
     >
       <div className="container mx-auto max-w-7xl">
@@ -51,49 +70,52 @@ const About = () => {
                 <p className="text-lg leading-relaxed">
                   Merhaba! Ben{" "}
                   <span className="text-white font-semibold">Bulut Kuru</span>,
-                  12+ yıllık deneyime sahip bir{" "}
+                  15+ yıllık deneyime sahip bir{" "}
                   <span className="text-blue-400">
-                    Senior Full Stack Developer
+                    Software Development Coordinator &amp; Senior Backend
+                    Architect
                   </span>
                   'ım.
                 </p>
                 <p className="text-lg leading-relaxed">
-                  Kariyerim boyunca{" "}
-                  <span className="text-purple-400">Laravel</span> ve{" "}
-                  <span className="text-blue-400">React.js</span> ile 260'tan
-                  fazla başarılı proje geliştirdim. Backend'den frontend'e,
-                  DevOps'tan sistem mimarisine kadar geniş bir yelpazede teknik
-                  uzmanlığa sahibim.
+                  <span className="text-purple-400">400+ kurumsal proje</span>,{" "}
+                  <span className="text-blue-400">65 Laravel/DDD backend API</span>,{" "}
+                  <span className="text-green-400">17 Node.js servisi</span> ve{" "}
+                  <span className="text-pink-400">300+ React.js/Next.js</span> ön
+                  yüzüyle; özel sektörden kamu kurumlarına uzanan geniş bir
+                  yelpazede, yüksek trafikli ve milyonlarca kaydı yöneten
+                  kurumsal sistemlerin mimari sorumluluğunu üstlendim.
                 </p>
                 <p className="text-lg leading-relaxed">
-                  Özellikle{" "}
-                  <span className="text-green-400">
-                    ölçeklenebilir sistemler
-                  </span>
-                  ,
-                  <span className="text-yellow-400">
-                    {" "}
-                    yüksek performanslı API'ler
-                  </span>{" "}
-                  ve
-                  <span className="text-pink-400">
-                    {" "}
-                    modern web uygulamaları
-                  </span>{" "}
-                  geliştirmede uzmanım.
+                  İBB bünyesinde{" "}
+                  <span className="text-yellow-400">186 kurumsal web sitesi</span>{" "}
+                  ve <span className="text-yellow-400">250+ uygulamadan</span>{" "}
+                  oluşan dijital ekosistemin teknik liderliğini yürüttüm;{" "}
+                  <span className="text-blue-400">17 kurum ve belediyeye</span>{" "}
+                  danışmanlık hizmeti verdim. 8 Linux sunucusunu sıfırdan kurarak
+                  Rancher + Kubernetes, GitLab, Docker ve CI/CD altyapısını uçtan
+                  uca yapılandırdım.
                 </p>
                 <p className="text-lg leading-relaxed">
-                  Kod kalitesi, best practices ve ekip çalışmasına önem veren,
-                  sürekli öğrenmeye açık bir geliştiriciyim.
+                  Şu anda{" "}
+                  <span className="text-white font-semibold">ExtraNetwork</span>
+                  'te otel teknolojileri platformunun teknik liderliğini
+                  yürütüyorum.
+                </p>
+                <p className="text-lg leading-relaxed">
+                  10–25 kişilik geliştirici ekiplerinde kod standartlarını
+                  belirledim, mimari karar süreçlerini yönettim ve teknik
+                  mentörlük yaptım. Code review, mentorluk ve ekip koordinasyonu
+                  ile sürdürülebilir kalite kültürü oluşturuyorum.
                 </p>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
-            {STATS.map((stat, index) => (
+            {STATS.map((stat) => (
               <div
-                key={index}
+                key={stat.label}
                 className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:scale-105"
               >
                 <div className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-blue-500 to-purple-400 bg-clip-text text-transparent mb-2">
@@ -108,15 +130,15 @@ const About = () => {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {highlights.map((item, index) => {
+          {highlights.map((item) => {
             const Icon = item.icon;
             return (
               <div
-                key={index}
+                key={item.title}
                 className="group bg-gray-800/30 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 hover:bg-gray-800/50 hover:border-blue-500/50 transition-all duration-300"
               >
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-blue-500 to-purple-400 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <Icon className="w-6 h-6 text-white" />
+                  <Icon className="w-6 h-6 text-white" aria-hidden="true" />
                 </div>
                 <h3 className="text-lg font-semibold text-white mb-2">
                   {item.title}
@@ -134,26 +156,29 @@ const About = () => {
             Hizmetlerim
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {SERVICES.map((service, index) => (
-              <div
-                key={index}
-                className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 hover:border-blue-500/50 transition-all duration-300 group"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/20 transition-colors">
-                    <div className="w-5 h-5 bg-gradient-to-br from-blue-600 to-purple-400 rounded" />
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                      {service.title}
-                    </h4>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      {service.description}
-                    </p>
+            {SERVICES.map((service) => {
+              const Icon = serviceIcons[service.icon] || Server;
+              return (
+                <div
+                  key={service.title}
+                  className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 hover:border-blue-500/50 transition-all duration-300 group"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-blue-500/20 transition-colors">
+                      <Icon className="w-5 h-5 text-blue-400" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                        {service.title}
+                      </h4>
+                      <p className="text-gray-400 text-sm leading-relaxed">
+                        {service.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

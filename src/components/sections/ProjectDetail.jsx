@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { PROJECTS } from "../../utils/constants";
+import { PROJECTS, SITE } from "../../utils/constants";
 import {
   ArrowLeft,
   ExternalLink,
@@ -21,7 +21,10 @@ const ProjectDetail = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [id]);
+    document.title = project
+      ? `${project.title} · ${SITE.shortTitle}`
+      : `Proje bulunamadı · ${SITE.shortTitle}`;
+  }, [id, project]);
 
   if (!project) {
     return (

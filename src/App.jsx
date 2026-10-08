@@ -6,16 +6,19 @@ import {
   useLocation,
 } from "react-router-dom";
 
-import Navbar from "./components/Layout/Navbar";
+import Navbar from "./components/layout/Navbar";
 import Hero from "./components/sections/Hero";
 import About from "./components/sections/About";
 import Skills from "./components/sections/Skills";
+import Experience from "./components/sections/Experience";
 import Projects from "./components/sections/Projects";
 import Contact from "./components/sections/Contact";
 import Loading from "./components/ui/Loading";
 import ProfileCard from "./components/ui/ProfileCard";
+import { SITE } from "./utils/constants";
 
 const ProjectDetail = lazy(() => import("./components/sections/ProjectDetail"));
+const NotFound = lazy(() => import("./components/sections/NotFound"));
 
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +36,9 @@ function AppContent() {
   useEffect(() => {
     setIsNavigating(true);
     window.scrollTo(0, 0);
+    if (location.pathname === "/") {
+      document.title = SITE.title;
+    }
 
     const timer = setTimeout(() => {
       setIsNavigating(false);
@@ -59,6 +65,7 @@ function AppContent() {
                   <Hero />
                   <About />
                   <Skills />
+                  <Experience />
                   <Projects />
                   <Contact />
                 </main>
@@ -66,6 +73,7 @@ function AppContent() {
             }
           />
           <Route path="/project/:id" element={<ProjectDetail />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
     </div>

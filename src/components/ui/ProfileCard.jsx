@@ -8,21 +8,31 @@ import {
   Github,
   Instagram,
   Briefcase,
-  Calendar,
   Award,
+  Building2,
 } from "lucide-react";
-import { PERSONAL_INFO } from "../../utils/constants";
+import { FaWhatsapp } from "react-icons/fa";
+import { PERSONAL_INFO, SITE } from "../../utils/constants";
 import profileImage from "../../assets/bulutkuru.png";
+
+const whatsappDigits = (PERSONAL_INFO.whatsapp || "").replace(/\D/g, "");
+
+const stats = [
+  { icon: Briefcase, value: "15+", label: "Yıl Deneyim", color: "text-blue-400" },
+  { icon: Award, value: "400+", label: "Proje", color: "text-purple-400" },
+  { icon: Building2, value: "17", label: "Kurum Danışmanlığı", color: "text-green-400" },
+];
 
 const ProfileCard = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      {/* Profile Photo Button - Bottom Left Corner */}
+      {/* Profil fotoğrafı düğmesi — sağ alt köşe */}
       <div className="fixed bottom-25 right-4 md:right-6 z-40">
         <button
           onClick={() => setIsOpen(true)}
+          aria-label="Profil kartını aç"
           className="group relative w-[90px] h-[110px] md:w-[150px] md:h-[200px] rounded-xl md:rounded-2xl overflow-hidden border-2 border-gray-700 hover:border-blue-500 transition-all duration-300 hover:scale-105 shadow-xl"
         >
           <img
@@ -43,9 +53,14 @@ const ProfileCard = () => {
         </button>
       </div>
 
-      {/* Profile Card Modal */}
+      {/* Profil kartı modalı */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Profil kartı"
+        >
           <div
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
@@ -54,9 +69,10 @@ const ProfileCard = () => {
           <div className="relative bg-gray-900 rounded-2xl border border-gray-700 shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setIsOpen(false)}
+              aria-label="Kapat"
               className="absolute top-4 right-4 p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors z-10"
             >
-              <X className="w-5 h-5 text-gray-400" />
+              <X className="w-5 h-5 text-gray-400" aria-hidden="true" />
             </button>
 
             <div className="relative h-48 bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-2xl">
@@ -80,27 +96,21 @@ const ProfileCard = () => {
               </div>
 
               <div className="grid grid-cols-3 gap-4 mb-8">
-                <div className="bg-gray-800 rounded-xl p-4 text-center border border-gray-700">
-                  <div className="flex items-center justify-center mb-2">
-                    <Briefcase className="w-5 h-5 text-blue-400" />
-                  </div>
-                  <p className="text-2xl font-bold text-white">12+</p>
-                  <p className="text-sm text-gray-400">Yıl Deneyim</p>
-                </div>
-                <div className="bg-gray-800 rounded-xl p-4 text-center border border-gray-700">
-                  <div className="flex items-center justify-center mb-2">
-                    <Award className="w-5 h-5 text-purple-400" />
-                  </div>
-                  <p className="text-2xl font-bold text-white">260+</p>
-                  <p className="text-sm text-gray-400">Proje</p>
-                </div>
-                <div className="bg-gray-800 rounded-xl p-4 text-center border border-gray-700">
-                  <div className="flex items-center justify-center mb-2">
-                    <Calendar className="w-5 h-5 text-green-400" />
-                  </div>
-                  <p className="text-2xl font-bold text-white">95%</p>
-                  <p className="text-sm text-gray-400">Memnuniyet</p>
-                </div>
+                {stats.map((stat) => {
+                  const Icon = stat.icon;
+                  return (
+                    <div
+                      key={stat.label}
+                      className="bg-gray-800 rounded-xl p-4 text-center border border-gray-700"
+                    >
+                      <div className="flex items-center justify-center mb-2">
+                        <Icon className={`w-5 h-5 ${stat.color}`} aria-hidden="true" />
+                      </div>
+                      <p className="text-2xl font-bold text-white">{stat.value}</p>
+                      <p className="text-sm text-gray-400">{stat.label}</p>
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="space-y-4 mb-8">
@@ -110,14 +120,11 @@ const ProfileCard = () => {
 
                 <div className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
                   <div className="p-2 rounded-lg bg-gray-800 border border-gray-700 group-hover:bg-blue-600 group-hover:border-blue-600 transition-colors">
-                    <Mail className="w-5 h-5" />
+                    <Mail className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">E-posta</p>
-                    <a
-                      href={`mailto:${PERSONAL_INFO.email}`}
-                      className="text-base"
-                    >
+                    <a href={`mailto:${PERSONAL_INFO.email}`} className="text-base">
                       {PERSONAL_INFO.email}
                     </a>
                   </div>
@@ -125,14 +132,11 @@ const ProfileCard = () => {
 
                 <div className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
                   <div className="p-2 rounded-lg bg-gray-800 border border-gray-700 group-hover:bg-green-600 group-hover:border-green-600 transition-colors">
-                    <Phone className="w-5 h-5" />
+                    <Phone className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Telefon</p>
-                    <a
-                      href={`tel:${PERSONAL_INFO.phone}`}
-                      className="text-base"
-                    >
+                    <a href={`tel:+${whatsappDigits}`} className="text-base">
                       {PERSONAL_INFO.phone}
                     </a>
                   </div>
@@ -140,7 +144,7 @@ const ProfileCard = () => {
 
                 <div className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors group">
                   <div className="p-2 rounded-lg bg-gray-800 border border-gray-700 group-hover:bg-purple-600 group-hover:border-purple-600 transition-colors">
-                    <MapPin className="w-5 h-5" />
+                    <MapPin className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Konum</p>
@@ -153,7 +157,7 @@ const ProfileCard = () => {
                 <h3 className="text-xl font-semibold text-white mb-4">
                   Sosyal Medya
                 </h3>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-3">
                   {PERSONAL_INFO.linkedin && (
                     <a
                       href={PERSONAL_INFO.linkedin}
@@ -161,7 +165,7 @@ const ProfileCard = () => {
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
                     >
-                      <Linkedin className="w-5 h-5" />
+                      <Linkedin className="w-5 h-5" aria-hidden="true" />
                       <span>LinkedIn</span>
                     </a>
                   )}
@@ -172,8 +176,19 @@ const ProfileCard = () => {
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors"
                     >
-                      <Github className="w-5 h-5" />
+                      <Github className="w-5 h-5" aria-hidden="true" />
                       <span>GitHub</span>
+                    </a>
+                  )}
+                  {whatsappDigits && (
+                    <a
+                      href={`https://wa.me/${whatsappDigits}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+                    >
+                      <FaWhatsapp className="w-5 h-5" aria-hidden="true" />
+                      <span>WhatsApp</span>
                     </a>
                   )}
                   {PERSONAL_INFO.instagram && (
@@ -183,7 +198,7 @@ const ProfileCard = () => {
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg transition-colors"
                     >
-                      <Instagram className="w-5 h-5" />
+                      <Instagram className="w-5 h-5" aria-hidden="true" />
                       <span>Instagram</span>
                     </a>
                   )}
@@ -191,12 +206,7 @@ const ProfileCard = () => {
               </div>
 
               <div className="mt-6 p-4 bg-gray-800 rounded-lg border border-gray-700">
-                <p className="text-gray-300 leading-relaxed">
-                  12+ yıllık deneyimle Laravel, React.js ve modern web
-                  teknolojileri kullanarak ölçeklenebilir ve yüksek performanslı
-                  web uygulamaları geliştiriyorum. Takım liderliği ve mentorluk
-                  konularında da deneyimliyim.
-                </p>
+                <p className="text-gray-300 leading-relaxed">{SITE.description}</p>
               </div>
             </div>
           </div>

@@ -1,71 +1,95 @@
-import React, { useState } from "react";
-import { PERSONAL_INFO } from "../../utils/constants";
-import { Mail, MapPin, Send, Github, Linkedin, Twitter } from "lucide-react";
+import React, { useRef, useState } from "react";
+import emailjs from "@emailjs/browser";
+import {
+  Mail,
+  MapPin,
+  Send,
+  Github,
+  Linkedin,
+  Instagram,
+  Loader2,
+} from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
+import { PERSONAL_INFO, EMAILJS } from "../../utils/constants";
+
+const whatsappDigits = (PERSONAL_INFO.whatsapp || "").replace(/\D/g, "");
+
+const contactInfo = [
+  {
+    icon: Mail,
+    title: "E-posta",
+    value: PERSONAL_INFO.email,
+    link: `mailto:${PERSONAL_INFO.email}`,
+  },
+  {
+    icon: MapPin,
+    title: "Konum",
+    value: PERSONAL_INFO.location,
+    link: null,
+  },
+];
+
+const socialLinks = [
+  {
+    icon: Linkedin,
+    name: "LinkedIn",
+    url: PERSONAL_INFO.linkedin,
+    color: "hover:text-blue-400",
+  },
+  {
+    icon: Github,
+    name: "GitHub",
+    url: PERSONAL_INFO.github,
+    color: "hover:text-gray-300",
+  },
+  {
+    icon: FaWhatsapp,
+    name: "WhatsApp",
+    url: whatsappDigits ? `https://wa.me/${whatsappDigits}` : "",
+    color: "hover:text-green-400",
+  },
+  {
+    icon: Instagram,
+    name: "Instagram",
+    url: PERSONAL_INFO.instagram,
+    color: "hover:text-pink-400",
+  },
+].filter((item) => item.url && item.url.trim());
+
+const inputClass =
+  "w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors";
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const formRef = useRef(null);
+  const [status, setStatus] = useState("idle"); // idle | sending | success | error
 
-  const [formStatus, setFormStatus] = useState("");
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const form = formRef.current;
+    if (!form) return;
+    // Bot tuzağı: gizli alan doluysa sessizce yok say
+    if (form.elements.website?.value) return;
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setStatus("sending");
+    try {
+      await emailjs.sendForm(EMAILJS.serviceId, EMAILJS.templateId, form, {
+        publicKey: EMAILJS.publicKey,
+      });
+      setStatus("success");
+      form.reset();
+    } catch (error) {
+      console.error("EmailJS gönderimi başarısız:", error);
+      setStatus("error");
+    }
+    setTimeout(() => setStatus("idle"), 6000);
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setFormStatus("success");
-    setTimeout(() => {
-      setFormStatus("");
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    }, 3000);
-  };
-
-  const contactInfo = [
-    {
-      icon: Mail,
-      title: "E-posta",
-      value: PERSONAL_INFO.email,
-      link: `mailto:${PERSONAL_INFO.email}`,
-    },
-    {
-      icon: MapPin,
-      title: "Konum",
-      value: PERSONAL_INFO.location,
-      link: null,
-    },
-  ];
-
-  const socialLinks = [
-    {
-      icon: Github,
-      name: "GitHub",
-      url: "https://github.com/bulutkuru",
-      color: "hover:text-gray-300",
-    },
-    {
-      icon: Linkedin,
-      name: "LinkedIn",
-      url: "https://linkedin.com/in/bulutkuru",
-      color: "hover:text-blue-400",
-    },
-    {
-      icon: Twitter,
-      name: "Twitter",
-      url: "https://twitter.com/bulutkuru",
-      color: "hover:text-sky-400",
-    },
-  ];
 
   return (
-    <section id="contact" className="relative min-h-screen py-20 px-4 bg-black">
+    <section
+      id="contact"
+      aria-label="İletişim"
+      className="relative min-h-screen py-20 px-4 bg-black"
+    >
       <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900/50 to-black" />
 
       <div className="relative z-10 container mx-auto max-w-7xl">
@@ -88,17 +112,15 @@ const Contact = () => {
                 İletişim Bilgileri
               </h3>
               <div className="space-y-6">
-                {contactInfo.map((item, index) => {
+                {contactInfo.map((item) => {
                   const Icon = item.icon;
                   return (
-                    <div key={index} className="flex items-start gap-4 group">
+                    <div key={item.title} className="flex items-start gap-4 group">
                       <div className="w-12 h-12 bg-gradient-to-br from-blue-600 via-blue-500 to-purple-400 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                        <Icon className="w-6 h-6 text-white" />
+                        <Icon className="w-6 h-6 text-white" aria-hidden="true" />
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm mb-1">
-                          {item.title}
-                        </p>
+                        <p className="text-gray-400 text-sm mb-1">{item.title}</p>
                         {item.link ? (
                           <a
                             href={item.link}
@@ -117,22 +139,20 @@ const Contact = () => {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-white mb-6">
-                Sosyal Medya
-              </h3>
+              <h3 className="text-xl font-bold text-white mb-6">Sosyal Medya</h3>
               <div className="flex gap-4">
-                {socialLinks.map((social, index) => {
+                {socialLinks.map((social) => {
                   const Icon = social.icon;
                   return (
                     <a
-                      key={index}
+                      key={social.name}
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`w-12 h-12 bg-gray-800/50 border border-gray-700 rounded-lg flex items-center justify-center text-gray-400 hover:border-blue-500 transition-all duration-300 ${social.color}`}
                       aria-label={social.name}
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-5 h-5" aria-hidden="true" />
                     </a>
                   );
                 })}
@@ -151,99 +171,106 @@ const Contact = () => {
           </div>
 
           <div className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-8">
-            <h3 className="text-2xl font-bold text-white mb-6">
-              Mesaj Gönderin
-            </h3>
+            <h3 className="text-2xl font-bold text-white mb-6">Mesaj Gönderin</h3>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6" noValidate={false}>
+              {/* Bot tuzağı — görünmez, kullanıcı doldurmaz */}
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" />
+              </div>
+
               <div>
-                <label
-                  htmlFor="name"
-                  className="block text-gray-300 text-sm font-medium mb-2"
-                >
+                <label htmlFor="name" className="block text-gray-300 text-sm font-medium mb-2">
                   İsim
                 </label>
                 <input
                   type="text"
                   id="name"
                   name="name"
-                  value={formData.name}
-                  onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                  autoComplete="name"
+                  className={inputClass}
                   placeholder="Adınız Soyadınız"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-gray-300 text-sm font-medium mb-2"
-                >
+                <label htmlFor="email" className="block text-gray-300 text-sm font-medium mb-2">
                   Email
                 </label>
                 <input
                   type="email"
                   id="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                  autoComplete="email"
+                  className={inputClass}
                   placeholder="ornek@email.com"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="subject"
-                  className="block text-gray-300 text-sm font-medium mb-2"
-                >
+                <label htmlFor="subject" className="block text-gray-300 text-sm font-medium mb-2">
                   Konu
                 </label>
                 <input
                   type="text"
                   id="subject"
                   name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors"
+                  className={inputClass}
                   placeholder="Proje hakkında konuşmak istiyorum"
                 />
               </div>
 
               <div>
-                <label
-                  htmlFor="message"
-                  className="block text-gray-300 text-sm font-medium mb-2"
-                >
+                <label htmlFor="message" className="block text-gray-300 text-sm font-medium mb-2">
                   Mesaj
                 </label>
                 <textarea
                   id="message"
                   name="message"
-                  value={formData.message}
-                  onChange={handleChange}
                   required
                   rows="5"
-                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                  className={`${inputClass} resize-none`}
                   placeholder="Mesajınızı buraya yazın..."
                 />
               </div>
 
-              {formStatus === "success" && (
-                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 text-green-400 text-sm">
-                  ✓ Mesajınız başarıyla gönderildi!
-                </div>
-              )}
+              <div aria-live="polite">
+                {status === "success" && (
+                  <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4 text-green-400 text-sm">
+                    ✓ Mesajınız başarıyla gönderildi! En kısa sürede dönüş yapacağım.
+                  </div>
+                )}
+                {status === "error" && (
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-400 text-sm">
+                    Mesaj gönderilemedi. Lütfen tekrar deneyin ya da doğrudan{" "}
+                    <a href={`mailto:${PERSONAL_INFO.email}`} className="underline">
+                      {PERSONAL_INFO.email}
+                    </a>{" "}
+                    adresine yazın.
+                  </div>
+                )}
+              </div>
 
               <button
                 type="submit"
-                className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-400 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-blue-500/50 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2"
+                disabled={status === "sending"}
+                className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 via-blue-500 to-purple-400 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-blue-500/50 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
-                <Send className="w-5 h-5" />
-                Mesaj Gönder
+                {status === "sending" ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
+                    Gönderiliyor...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" aria-hidden="true" />
+                    Mesaj Gönder
+                  </>
+                )}
               </button>
             </form>
           </div>
